@@ -1,0 +1,66 @@
+﻿@model CyGateWMS.Models.RosterShift
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+<hr />
+<div class="header">
+    <ol class="breadcrumb">
+        <li><a asp-action="Index" asp-controller="RosterShifts">RosterShift</a></li>
+        <li class="active">@Model.RosterShiftName</li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @Model.RosterShiftName
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+
+                            <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info">
+
+
+                                <tbody>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Shift</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.RosterShiftName)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Created On</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.CreatedOn)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Modified On</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.ModifiedOn)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Status</td>
+                                        <td class="center ">@(Model.IsActive ? "Active" : "InActive")</td>
+                                    </tr>
+                                </tbody>
+                            </table><div class="row">
+                            </div>
+                        </div>
+                        <div>
+                            <form asp-action="Delete">
+                                <input type="hidden" asp-for="RosterShiftId" />
+                                <input type="submit" value="Delete" class="btn btn-default" /> |
+                                <a asp-action="Index">Back to List</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--End Advanced Tables -->
+            </div>
+        </div>
+    </div>
+</div>

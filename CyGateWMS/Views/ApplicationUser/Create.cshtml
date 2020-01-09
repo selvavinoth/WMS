@@ -1,0 +1,85 @@
+﻿@model CyGateWMS.ViewModels.UserViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CyWMS | Register</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+
+</head>
+
+<body class="gray-bg">
+
+    <div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+            </div>
+            <div>
+                <h2><img src="~/images/Latest_without_BG.png" /></h2>
+            </div>
+            <div>
+                <h4 style="color:#B633FF">Cygate Work Management System</h4>
+            </div>
+            <form class="m-t" role="form" style="width: 300px; height: 300px; margin: 0 auto" asp-controller="ApplicationUser" asp-action="Create" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <input type="Email" asp-for="Email" class="form-control" placeholder="Email for Login" required="">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="UserName" class="form-control" placeholder="Full Name" required="">
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="text" asp-for="EmployeeId" class="form-control" placeholder="Employee Id" required="">
+                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="number" asp-for="PhoneNumber" class="form-control" placeholder="Mobile" required="">
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <select asp-for="CategoryId"
+                            class="form-control"
+                            asp-items="Model.Categories"></select>
+                    <span asp-validation-for="Categories" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <input type="password" asp-for="Password" class="form-control" placeholder="Password" required="">
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="password" asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" required="">
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+
+                <button type="submit" class="btn btn-primary block full-width m-b">Register</button>
+
+                <a class="btn btn-sm btn-white btn-block" asp-controller="Account" asp-action="Login">Login</a>
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

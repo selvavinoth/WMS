@@ -1,0 +1,365 @@
+﻿@model CyGateWMS.ViewModels.RosterViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    var IsCurrentMonth = ViewBag.IsCurrentMonth;
+
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+<hr/>
+<div class="header" id="myDIV">
+    <ol class="breadcrumb">
+        <li><a id="btnPrevious" asp-action="Previous" class="btn btn-default">Previous</a></li>
+        <li><a id="btnCurrent" asp-action="Index" asp-controller="Roster" class="btn btn-default">Current</a></li>
+        <li><a id="btnNext" asp-action="Next" asp-controller="Roster" class="btn btn-default">Next</a></li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                @using (Html.BeginForm("Export", "Roster", FormMethod.Post))
+                                {
+                                    <a id="btnPreview" class="btn btn-info">Preview</a><span></span>
+                                    <input type="hidden" name="GridHtml" />
+                                    <input type="hidden" name="EmailHtml" />
+                                    <input type="submit" id="btnSubmit" class="btn btn-info" value="Export" />
+                                    <input type="button" id="btnSend" class="btn btn-primary" value="Send To Everyone" />
+                                    <input type="date"  id="startDate" class="btn btn-warning" />
+                                    <input type="date" id="endDate" class="btn btn-warning"  />
+                                    <input type="button" id="btnSendVendor" class="btn btn-warning" value="SendToVendor" />
+                                }
+
+                            </div>
+                            <div>
+                               
+                            </div>
+
+                            <div class="col-sm-4">
+                            </div>
+                        </div>
+                    </div>
+                   
+                    
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" asp-controller="Roster" asp-action="Edit" method="post">
+                        <div class="table-responsive">
+                            <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                                <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info">
+                                    <thead>
+                                        <tr class="row">@ViewBag.Date </tr>
+                                       
+                                        <tr role="row">
+                                            <th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" style="width: 151px;">Date</th>
+                                            @foreach (var item in Model.Dates)
+                                                        {
+                                                            
+                                                            if (item.DayOfWeek.ToString() == Constants.SATURDAY || item.DayOfWeek.ToString() == Constants.SUNDAY)
+                                                            {
+                                            <th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" style="width: 151px;">
+                                                <font color="red">@item.Day</font>
+                                                @if (User.IsInRole(Constants.TL) || User.IsInRole(Constants.ADMIN))
+                                                {
+                                                    <a href="#">
+                                                        <span id="@item.Day" class="glyphicon glyphicon-copy"></span>
+                                                        <span id="@item.Day" class="glyphicon glyphicon-off"></span>
+                                                    </a>
+                                                }
+
+                                            </th>
+                                                }
+                                                else
+                                                {
+                                            <th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" style="width: 151px;">
+                                                @item.Day
+                                                @if (User.IsInRole(Constants.TL) || User.IsInRole(Constants.ADMIN))
+                                                {
+                                                    <a href="#">
+                                                        <span id="@item.Day" class="glyphicon glyphicon-copy"></span>
+                                                    </a>
+                                                    <a href="#">
+                                                        <span id="@item.Day" class="glyphicon glyphicon-off"></span>
+                                                    </a>
+                                                }
+                                                </th>
+                                                }
+                                            }
+                                        </tr>
+                                        <tr role="row">
+                                            <th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" style="width: 151px;">Day</th>
+                                            @foreach (var item in Model.Dates)
+                                            {
+                                                if (item.DayOfWeek.ToString() == Constants.SATURDAY || item.DayOfWeek.ToString() == Constants.SUNDAY)
+                                                {
+                                                    <th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" style="width: 151px;"><font color="red">@item.DayOfWeek</font></th>
+                                                }
+                                                else
+                                                {
+                                                    <th class="sorting_asc" tabindex="0" aria-controls="dataTables-example" rowspan="1" colspan="1" aria-sort="ascending" style="width: 151px;">@item.DayOfWeek</th>
+                                                }
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Users.Count; i++)
+                                        {
+                                            
+                                            <tr class="gradeA even">
+                                                <td class="sorting_1"> @Html.DisplayFor(modelItem => Model.Users[i].Name)</td>
+                                                @{
+                                                    var roster = Model.Rosters.Where(e => e.UserId == Model.Users[i].Id).ToList();
+                                                    @foreach (var dateTime in Model.Dates)
+                                                    {
+                                                        var item = roster.Where(e => e.Date.Day == dateTime.Day).FirstOrDefault();
+                                                        var index = Model.Rosters.IndexOf(item);
+                                                        var shiftID = Model.Rosters[index].RosterShift?.RosterShiftId;
+                                                        var Leave = Model.Rosters[index].RosterShifts.Where(e => e.Value.ToString() == shiftID.ToString())
+                                                                    .FirstOrDefault().Text;
+                                                        var thid = dateTime.Day + "th";
+                                                <td class="@thid">
+                                                    <input type="hidden" asp-for="@Model.Rosters[index].RosterId" />
+                                                    <input type="hidden" asp-for="@Model.Rosters[index].UserId" />
+                                                    <input type="hidden" asp-for="@Model.Rosters[index].Date" />
+                                                    <input type="hidden" asp-for="@Model.Rosters[index].CreatedOn" />
+                                                    @if (User.IsInRole(Constants.TL) || User.IsInRole(Constants.ADMIN))
+                                                    {
+
+                                                        if (Leave == Constants.OFF || Leave == Constants.PL || Leave == Constants.CL || Leave == Constants.SL)
+                                                        {
+                                                            <select asp-for="@Model.Rosters[index].RosterShiftsId"
+                                                                    class="form-control" style="background-color:gray"
+                                                                    asp-items="Model.Rosters[index].RosterShifts"></select>
+                                                        }
+                                                        else
+                                                        {
+                                                            <select asp-for="@Model.Rosters[index].RosterShiftsId"
+                                                                    class="form-control"
+                                                                    asp-items="Model.Rosters[index].RosterShifts"></select>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (Leave == Constants.OFF || Leave == Constants.PL)
+                                                        {
+                                                        <select asp-for="@Model.Rosters[index].RosterShiftsId"
+                                                                class="form-control"
+                                                                asp-items="Model.Rosters[index].RosterShifts" disabled></select>
+                                                        }
+                                                        else
+                                                        {
+                                                            <select asp -for= "@Model.Rosters[index].RosterShiftsId"
+                                                                    class="form-control"
+                                                                    asp-items="Model.Rosters[index].RosterShifts" disabled></select>
+                                                        }
+                                                    }
+                                                </td>
+
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        @if (User.IsInRole(Constants.TL) || User.IsInRole(Constants.ADMIN))
+                        {
+                        <div class="form-group">
+                            <div class="col-sm-offset-10 col-sm-2">
+                                <button type="submit" class="btn btn-success">Update</button>
+                            </div>
+                        </div>
+                        }
+                    </form>
+                </div>
+            </div>
+            <div>
+
+            </div>
+            <!--End Advanced Tables -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:auto;">
+        <div class="modal-content">
+            <div class="modal-header">
+                Roster Shift
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div id="preview" class="modal-body">
+                <div>
+                    @await Component.InvokeAsync("Preview", Model)
+                </div>             
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RosterVendor" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width:auto;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <div class="row">
+                    <div class="col-sm-4">
+                        Roster To Vendor
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="button" id="SendVendor" class="btn btn-warning pull-right" aria-hidden="true">
+                            Send
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <div id="RosterVendorPreview" class="modal-body">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="SuccessModal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm" >
+        <div class="modal-content">
+            <div class="modal-header">
+                Roster Shift
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div id="success" class="modal-body">
+                <div>
+                    Roster Shift has been mailed successfully.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+<script type="text/javascript">
+    $(function () {
+        var emailMonth = '';
+            if ('@ViewBag.IsCurrentMonth' === 'True') {
+                $('#btnCurrent').addClass("active")
+                $('#btnPrevious').removeClass("active")
+                $('#btnNext').removeClass("active")
+                emailMonth = 'C';
+                
+            }
+            else if ('@ViewBag.IsPreviousMonth' === 'True') {
+                $('#btnPrevious').addClass("active")
+                $('#btnCurrent').removeClass("active")
+                $('#btnNext').removeClass("active")
+                emailMonth = 'P';
+            }
+            else if ('@ViewBag.IsNextMonth' === 'True') {
+                $('#btnNext').addClass("active")
+                $('#btnPrevious').removeClass("active")
+                $('#btnCurrent').removeClass("active")
+                emailMonth = 'N';
+            }
+            $("#btnPreview").click(function () {
+                $('#LoginModal').modal('show');
+            });
+            $("#btnSubmit").click(function () {
+                $("input[name='GridHtml']").val($("#preview").html());
+            });
+            $("#btnSendVendor").click(function () {
+
+            });
+            $(".glyphicon-copy").click(function () {
+
+                var curRowId = this.id + "th";
+                var prvRowId = this.id - 1 + "th";
+                var currentRow = document.getElementsByClassName(curRowId)
+                var previousRow = document.getElementsByClassName(prvRowId)
+                for (var i = 0; i < currentRow.length; i++)
+                {
+                    var selected = $(previousRow[i]).find("select").children("option:selected").val();
+                    $(currentRow[i]).find("select").val(selected);
+                }
+            });
+            $(".glyphicon-off").click(function () {
+                var curRowId = this.id + "th";
+                var currentRow = document.getElementsByClassName(curRowId)
+                for (var i = 0; i < currentRow.length; i++) {
+                    $(currentRow[i]).find("select").val(5);
+                }
+            });
+
+            $("#btnSend").click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: '/Roster/Email?month='+ emailMonth, // <-- Where should this point?
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify($("#preview").html())
+                }).done(
+                    $('#SuccessModal').modal('show')).fail()
+            });
+
+            $("#btnSendVendor").click(function (e) {
+                e.preventDefault();
+                var start = $('#startDate').val();
+                var end = $('#endDate').val();
+                if ((start !== "" && start !== null) && (end !== "" && end !== null)) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Roster/HtmlVendor?start="+ start+ "&end="+end,
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("Request: " + XMLHttpRequest.toString() + "\n\nStatus: " + textStatus + "\n\nError: " + errorThrown);
+                        },
+                        success: function (result) {
+                            document.getElementById("RosterVendorPreview").innerHTML = result;
+                            $('#RosterVendor').modal('show');
+                        }
+                    });
+                }
+                else {
+                    alert("Select date")
+                }
+
+            });
+            $("#SendVendor").click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: '/Roster/EmailToVendor', // <-- Where should this point?
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify($("#RosterVendorPreview").html())
+                }).done(
+                    $('#SuccessModal').modal('show')).fail()
+            });
+            
+        });
+
+        
+        
+
+</script>
+}

@@ -1,0 +1,119 @@
+﻿@model CyGateWMS.ViewModels.AllowanceViewModel
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+<hr />
+<div class="header">
+    <ol class="breadcrumb">
+        <li><a asp-action="Index" asp-controller="Allowancs">Allowance</a></li>
+        <li class="active">@Model.Comments</li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+
+                            <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info">
+                                <tbody>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1">Description</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Comments)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Amount</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Price)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Month</td>
+                                        <td class="center ">@Model.Month.ToString("MMMM")</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Number Of Days</td>
+                                        <td class="center ">@(Model.NumberOfDays)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Allowance Type</td>
+                                        <td class="center ">@(Model.AllowanceType?.AllowanceTypeName)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Status</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Status)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Created By</td>
+                                        <td class="center ">@(Model.CreatedBy?.Name)</td>
+                                    </tr>
+
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Category Type</td>
+                                        <td class="center ">@(Model.AssignedCategory?.CategoryName)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Creation Date</td>
+                                        <td class="center ">@(Model.CreatedOn)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Dates</td>
+                                        <td class="center ">
+                                            <div class="col-sm-6" id="print-array"></div>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table><div class="row">
+                            </div>
+                        </div>
+                        <div>
+                            <form asp-action="Delete">
+                                <input type="hidden" asp-for="AllowanceID" />
+                                <input type="submit" value="Delete" class="btn btn-default btn-danger" /> |
+                                <a asp-action="Index" class="btn btn-info" asp-route-IsFromFilter="@Model.IsFromFilter">Back to List</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--End Advanced Tables -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(function () {
+            var Dates = new Array();
+            Dates = @Html.Raw(Model.AllownanceDatesjsonResult);
+            printArray();
+
+
+            function printArray() {
+                var printArr = new String;
+                let count = 0;
+                Dates.forEach(function (val) {
+                    printArr += '<span style="background-color:#D2B4DE">'+val + '</span> | ';
+                    if (count >= 4) {
+                        count = 0;
+                        printArr += ' </br>';
+                    }
+
+                });
+                $('#print-array').html(printArr);
+            }
+
+});
+    </script>
+}

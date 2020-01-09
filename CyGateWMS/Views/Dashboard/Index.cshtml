@@ -1,0 +1,275 @@
+﻿@model CyGateWMS.ViewModels.DashboardViewModel
+@{
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<hr />
+<div class="header">
+    <h1 class="page-header">
+        <small>Welcome @User.Identity.Name</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a>Dashboard</a></li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <!-- /. ROW  -->
+        @if (!User.IsInRole(Constants.USER))
+        {
+            <a asp-action="Index" asp-controller="ApplicationUser">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3></h3><h3>@Model.UserCount</h3>
+                                <small>Users</small>
+
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-users fa-5x red"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+        @if (User.IsInRole(Constants.FINANCE))
+        {
+
+
+            <a asp-action="Index" asp-controller="Allowances">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3></h3><h3>@Model.AllowancesCount</h3>
+                                <small>Allowances</small>
+
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-money fa-5x green"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-action="Approved" asp-controller="Allowances">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3></h3><h3>@Model.AllowanceApproved</h3>
+                                <small>Approved</small>
+
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-money fa-5x green"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-action="Pending" asp-controller="Allowances">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3></h3><h3>@Model.AllowancePending</h3>
+                                <small>Pending</small>
+
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-money fa-5x red"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+        @if (!User.IsInRole(Constants.FINANCE))
+        {
+            <a asp-action="Index" asp-controller="Reports">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3></h3><h3>@Model.ReportCount</h3>
+                                <small>Reports</small>
+
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-file fa-5x blue"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a asp-action="Index" asp-controller="Allowances">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3></h3><h3>@Model.AllowancesCount</h3>
+                                <small>Allowances</small>
+
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-money fa-5x green"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-action="Details" asp-controller="ApplicationUser">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="board">
+                        <div class="panel panel-primary">
+                            <div class="number">
+                                <h3></h3><h3></h3>
+                                <small>Profile</small>
+
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-user fa-5x yellow"></i>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+    @if (!User.IsInRole(Constants.FINANCE))
+    {
+        <div class="row">
+            <a asp-action="Approved" asp-controller="Allowances">
+                <div class="col-xs-6 col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-body easypiechart-panel">
+                            <h4>Allowance Approved</h4>
+                            <div class="easypiechart" id="easypiechart-blue" data-percent="82">
+                                <span class="percent">@Model.AllowanceApproved</span>
+                                <canvas height="110" width="110"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-action="Pending" asp-controller="Allowances">
+                <div class="col-xs-6 col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-body easypiechart-panel">
+                            <h4>Allowance Pending</h4>
+                            <div class="easypiechart" id="easypiechart-orange" data-percent="55">
+                                <span class="percent">@Model.AllowancePending</span>
+                                <canvas height="110" width="110"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-action="OnCallIndia" asp-controller="Reports">
+                <div class="col-xs-6 col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-body easypiechart-panel">
+                            <h4>OnCall - India</h4>
+                            <div class="easypiechart" id="easypiechart-teal" data-percent="84">
+                                <span class="percent">@Model.OnCallIndia</span>
+                                <canvas height="110" width="110"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <a asp-action="OnCallSweden" asp-controller="Reports">
+                <div class="col-xs-6 col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-body easypiechart-panel">
+                            <h4>OnCall - Sweden</h4>
+                            <div class="easypiechart" id="easypiechart-red" data-percent="46">
+                                <span class="percent">@Model.OnCallSweden</span>
+                                <canvas height="110" width="110"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div id="chartContainer" style="width: 100%; height:400px;"></div>
+        <br />
+    }
+
+
+    <div id="chartContainer1" style="width: 70%; height:400px;"></div>
+
+</div>
+@section Scripts
+    {
+<script type="text/javascript">
+
+    $(function () {
+        ColumnChart();
+        piechart();
+        function ColumnChart() {
+             var chart = new CanvasJS.Chart("chartContainer", {
+            theme: "light2",
+            animationEnabled: true,
+            title: {
+                text: "Work Summary"
+            },
+            data: [
+            {
+                type: "column",
+                dataPoints: @Html.Raw(ViewBag.DataPoints),
+            }
+            ]
+            });
+            chart.render();
+        }
+
+        function piechart() {
+            var piechart = new CanvasJS.Chart("chartContainer1", {
+            title: {
+                text: "Ticket Details"
+            },
+            animationEnabled: true,
+            legend: {
+                verticalAlign: "center",
+                horizontalAlign: "left",
+                fontSize: 20,
+                fontFamily: "Helvetica"
+            },
+            theme: "light2",
+            data: [
+            {
+                type: "pie",
+                indexLabelFontFamily: "Garamond",
+                indexLabelFontSize: 20,
+                indexLabel: "{label} {y}",
+                startAngle: -20,
+                showInLegend: true,
+                toolTipContent: "{legendText} {y}",
+                dataPoints: @Html.Raw(ViewBag.PieDataPoints),
+            }
+            ]
+            });
+            piechart.render();
+        }
+        
+        
+        
+    });
+</script>
+}
+

@@ -1,0 +1,88 @@
+﻿@using Microsoft.AspNetCore.Identity;
+
+<nav class="navbar-default navbar-side" role="navigation" >
+    <div class="sidebar-collapse">
+        <ul class="nav" id="main-menu">
+            <li>
+                <a asp-controller="Dashboard" asp-action="Index"><i class="fa fa-dashboard"></i> Dashboard</a>
+            </li>
+
+            @if (User.IsInRole(Constants.ADMIN) || User.IsInRole(Constants.TL) || User.IsInRole(Constants.FINANCE))
+            {
+                @if (!User.IsInRole(Constants.FINANCE))
+                {
+                    <li>
+                        <a asp-controller="Reports" asp-action="Index"><i class="fa fa-desktop"></i> Work Summary</a>
+                    </li>
+                }
+                <li>
+                    <a asp-controller="Allowances" asp-action="Index"><i class="fa fa-sitemap"></i> Allowance</a>
+                </li>
+                <li>
+                    <a asp-controller="Roster" asp-action="Index"><i class="fa fa-sitemap"></i> Roster</a>
+                </li>
+                <li>
+                    <a asp-controller="ApplicationUser" asp-action="Index"><i class="fa fa-vcard-o"></i> Users</a>
+                </li>
+                @if (User.IsInRole(Constants.FINANCE))
+                {
+                    <li>
+                        <a asp-controller="ApplicationUser" asp-action="AllUsers"><i class="fa fa-desktop"></i> All Users</a>
+                    </li>
+                }
+                if (User.IsInRole(Constants.ADMIN))
+                {
+                    <li>
+                        <a asp-controller="ApplicationRole" asp-action="Index"><i class="fa fa-sitemap"></i> Roles</a>
+                    </li>
+                }
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gears"></i> Settings<span class="caret"></span></a>
+                    <ul class="dropdown-menu forAnimate" role="menu" style="position: absolute; top: -100px; left:200px">
+                        <li>
+                            <a asp-controller="Category" asp-action="Index"><i class="fa fa-gears"></i> Departments</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a asp-controller="Shifts" asp-action="Index"><i class="fa fa-gears"></i> Shift</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a asp-controller="Type" asp-action="Index"><i class="fa fa-gears"></i> Ticket</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a asp-controller="AllowanceTypes" asp-action="Index"><i class="fa fa-gears"></i> Allowance</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a asp-controller="RosterShifts" asp-action="Index"><i class="fa fa-gears"></i> ShiftRoster</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a asp-controller="Holidays" asp-action="Index"><i class="fa fa-gears"></i> Holidays</a>
+                        </li>
+                        <li class="divider"></li>
+                    </ul>
+                </li>
+            }
+
+            @if (User.IsInRole(Constants.USER))
+            {
+                <li>
+                    <a asp-controller="Reports" asp-action="Index"><i class="fa fa-desktop"></i> Work Summary</a>
+                </li>
+                <li>
+                    <a asp-controller="Allowances" asp-action="Index"><i class="fa fa-sitemap"></i> Allowance</a>
+                </li>
+                <li>
+                    <a asp-controller="Roster" asp-action="Index"><i class="fa fa-sitemap"></i> Roster</a>
+                </li>
+                <li>
+                    <a asp-controller="Holidays" asp-action="Index"><i class="fa fa-gears"></i> Holidays</a>
+                </li>
+            }
+        </ul>
+    </div>
+</nav>

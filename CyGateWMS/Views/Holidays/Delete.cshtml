@@ -1,0 +1,73 @@
+﻿@model CyGateWMS.Models.Holiday
+
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+
+<hr />
+<div class="header">
+    <ol class="breadcrumb">
+        <li><a asp-action="Index" asp-controller="Holidays">Holidays</a></li>
+        <li class="active">@Model.Description</li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @Model.Description
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+
+                            <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info">
+
+
+                                <tbody>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Description</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Description)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Date</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Date)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Day</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Day)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Month</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Month)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Year</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Year)</td>
+                                    </tr>
+
+                                </tbody>
+                            </table><div class="row">
+                            </div>
+                        </div>
+                        <div>
+                            <form asp-action="Delete">
+                                <input type="hidden" asp-for="ID" />
+                                <input type="submit" value="Delete" class="btn btn-default" /> |
+                                <a asp-action="Index">Back to List</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!--End Advanced Tables -->
+            </div>
+        </div>
+    </div>
+</div>

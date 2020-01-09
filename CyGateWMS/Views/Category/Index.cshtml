@@ -1,0 +1,75 @@
+﻿@model IEnumerable<CyGateWMS.Models.Category>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+<hr />
+
+<div class="header">
+    <ol class="breadcrumb">
+        <li><a asp-action="Index" asp-controller="Category">Category</a></li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                @if (User.IsInRole(Constants.ADMIN))
+                {
+                    <div class="panel-heading">
+                        <a class="btn btn-info" asp-action="Create" asp-controller="Category">Add New</a>
+                    </div>
+                }
+                @if (Model.Count() > 0)
+                {
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                            <table class="table table-striped table-bordered" id="dataTable" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Created On</th>
+                                        <th>Status</th>
+                                        @if (User.IsInRole(Constants.ADMIN))
+                                        {
+                                        <th></th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.CategoryName)</td>
+                                        <td data-order="@item.CreatedOn.ToString("yyyy-MM-dd")">@item.CreatedOn.ToString("dd-MM-yyyy")</td>
+                                        <td>@((item.IsActive == true) ? "Active" : "InActive" )</td>
+                                        @if (User.IsInRole(Constants.ADMIN))
+                                        {
+                                            <td>
+                                                <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
+                                                <a class="btn btn-info" asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |
+                                                <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
+                                            </td>
+                                        }
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                }
+            </div>
+            <!--End Advanced Tables -->
+        </div>
+    </div>
+</div>
+

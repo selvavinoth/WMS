@@ -1,0 +1,123 @@
+﻿@model CyGateWMS.ViewModels.ReportGenerationViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+<hr />
+
+<div class="header">
+    <ol class="breadcrumb">
+        <li><a asp-action="Index" class="active" asp-controller="Reports">Reports</a></li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a asp-action="Create" asp-controller="Reports" class="btn btn-info">Add New</a> |
+                    <a asp-action="Report" asp-controller="Reports" class="btn btn-info">Download</a>
+
+                    <hr />
+                    <form class="form-inline" asp-action="Filter" role="form" method="post">
+                        @if (User.IsInRole(Constants.ADMIN))
+                        {
+                            <select asp-for="@Model.CategoryID"
+                                    class="form-control dropdown btn btn-info" style="width: 150px;"
+                                    asp-items="Model.Categories"></select>
+                        }
+                        <select asp-for="@Model.ShiftID"
+                                class="form-control dropdown btn btn-info" style="width: 120px;"
+                                asp-items="Model.Shifts"></select>
+                        <select asp-for="@Model.TypeID"
+                                class="form-control dropdown btn btn-info" style="width: 120px;"
+                                asp-items="Model.Types"></select>
+                        <select asp-for="@Model.OnCallEscalateID"
+                                class="form-control dropdown btn btn-info" style="width: 140px;"
+                                asp-items="Model.OnCallEscalaties"></select>
+                        @if (!User.IsInRole(Constants.USER))
+                        {
+                            <select asp-for="@Model.UserID"
+                                    class="form-control dropdown btn btn-info" style="width: 150px;"
+                                    asp-items="Model.Users"></select>
+                        }
+                        <br /><br />
+                        <label for="StartTime">Start Date From</label>
+                        <input asp-for="StartTime" id="startTime" type="date" class="form-control" style="width: 160px;" placeholder="Start Date">
+                        <label for="EndTime"> To</label>
+                        <input style="width: 160px;" asp-for="EndTime" id="startTime" type="date" class="form-control" placeholder="End Date">
+                        <input type="submit" class="btn btn-success" value="Apply" />
+                    </form>
+                </div>
+                @if (@Model.Reports.Count() > 0)
+                {
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                                <table class="table table-striped table-bordered" id="dataTable" style="width:100%;" >
+                                    <thead>
+                                        <tr role="row">
+                                            <th>Ticket No</th>
+                                            <th>Start Date</th>
+                                            <th>Ticket Type</th>
+                                            <th>Shift</th>
+                                            <th>On Call</th>
+                                            @if (!User.IsInRole(Constants.USER))
+                                            {
+                                                <th>User</th>
+                                            }
+                                            else
+                                            {
+                                                <th>Time Spent</th>
+                                            }
+
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Reports)
+                                        {
+                                        <tr>
+                                            <td width="20%"> @Html.DisplayFor(modelItem => item.TicketNo)</td>
+                                            <td data-order="@item.StartTime?.ToString("yyyy-MM-dd")">@item.StartTime?.ToString("dd-MM-yyyy")</td>
+                                            <td> @Html.DisplayFor(modelItem => item.Type.TypeName)</td>
+                                            <td> @Html.DisplayFor(modelItem => item.Shift.ShiftName)</td>
+                                            <td> @Html.DisplayFor(modelItem => item.onCallEscalate.OnCallEscalateName)</td>
+                                            @if (!User.IsInRole(Constants.USER))
+                                            {
+                                                <td width="20%"> @Html.DisplayFor(modelItem => item.User.Name)</td>
+                                            }
+                                            else
+                                            {
+                                                <td> @Html.DisplayFor(modelItem => item.TimeSpent)</td>
+                                            }
+
+                                            <td class="center ">
+                                                <a asp-action="Edit" class="btn btn-info" asp-route-id="@item.ReportID">Edit</a> |
+                                                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.ReportID">Details</a> |
+                                                <a asp-action="Delete" class="btn btn-info" asp-route-id="@item.ReportID">Delete</a>
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="panel-body">No Record</div>
+
+                }
+
+            </div>
+            <!--End Advanced Tables -->
+        </div>
+    </div>
+</div>

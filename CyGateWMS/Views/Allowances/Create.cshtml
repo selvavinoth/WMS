@@ -1,0 +1,230 @@
+﻿@model CyGateWMS.ViewModels.AllowanceViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+
+<div class="header">
+    <hr />
+    <ol class="breadcrumb">
+        <li><a asp-controller="Allowances" asp-action="Index">Allowance</a></li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" asp-action="Create" role="form" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>                        
+                        <div class="form-group">
+                            <label asp-for="AllowanceTypes" class="col-sm-2 control-label">Allowance Type</label>
+                            <div class="col-sm-10">
+                                <select asp-for="AllowanceTypeId"
+                                        class="form-control"
+                                        asp-items="Model.AllowanceTypes" required></select>
+                            </div>
+                            <span asp-validation-for="AllowanceTypes" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AllowanceDate" class="col-sm-2 control-label">Date</label>
+                            <div class="col-sm-10">
+                                <div class="col-sm-4" id="datepicker"></div>
+                                <div class="col-sm-6" id="print-array"></div>
+                            </div>
+                            <span asp-validation-for="AllowanceDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Comments" class="col-sm-2 control-label">Comment</label>
+                            <div class="col-sm-10">
+                                <input asp-for="Comments" type="text" class="form-control" required>
+                            </div>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Price" class="col-sm-2 control-label">Amount</label>
+                            <div class="col-sm-10">
+                                <input asp-for="Price" type="text" class="form-control">
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+
+                        @if (User.IsInRole(Constants.ADMIN))
+                        {
+                            <div class="form-group">
+                                <label asp-for="AssignedToItems" class="col-sm-2 control-label">Allowance Type</label>
+                                <div class="col-sm-10">
+                                    <select asp-for="AssignedToId"
+                                            class="form-control"
+                                            asp-items="Model.AssignedToItems" required></select>
+                                </div>
+                                <span asp-validation-for="AssignedToItems" class="text-danger"></span>
+                            </div>
+                        }
+
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            var AllownanceDates = new Array();
+        
+            function addDate(date) {
+                if (jQuery.inArray(date, AllownanceDates) < 0) AllownanceDates.push(date);
+
+            }
+
+            function removeDate(index) {
+                AllownanceDates.splice(index, 1);
+            }
+           
+             function CalculatePrice() {
+                 var allowanceTypeId = document.getElementById("AllowanceTypeId").value;
+                 if (allowanceTypeId != null && allowanceTypeId != "" && allowanceTypeId != undefined) {
+                     var allowanceTypes = @Html.Raw(Json.Serialize(Model.AllowanceTypesDetails));
+                     var selectedPrice = GetSelectionPrice(allowanceTypeId, allowanceTypes);
+                     document.getElementById("Price").value = AllownanceDates.length * selectedPrice;
+                 }                
+            }
+            $("#AllowanceTypeId").change(function () {
+                var allowanceTypeId = document.getElementById("AllowanceTypeId").value;
+                var allowanceTypes = @Html.Raw(Json.Serialize(Model.AllowanceTypesDetails));
+                var selectedPrice = GetSelectionPrice(allowanceTypeId, allowanceTypes);
+               
+                document.getElementById("Price").value = AllownanceDates.length * selectedPrice;
+            });
+            function GetSelectionPrice(id, allowanceTypes) {
+                for (let i = 0; i < allowanceTypes.length; i++) {
+                    if (allowanceTypes[i].allowanceTypeId == id) {
+                        return allowanceTypes[i].allowanceTypePrice
+                    }
+                }
+
+            }
+            function printArray() {
+                var printArr = new String;
+                let count = 0;
+                AllownanceDates.forEach(function (val) {
+                    printArr += '<span style="background-color:#D2B4DE">'+val + '</span> | ';  
+                    if (count >= 4) {
+                        count = 0;
+                        printArr += ' </br>';
+                    }
+                    
+                });
+                $('#print-array').html(printArr);
+                submit();
+            }
+            // Adds a date if we don't have it yet, else remove it
+            function addOrRemoveDate(date) {
+                var index = jQuery.inArray(date, AllownanceDates);
+                if (index >= 0)
+                    removeDate(index);
+                else
+                    addDate(date);
+
+                printArray();
+            }
+
+            //Checking the existence
+            function IsExisting(date) {
+                var allowanceTypeId = document.getElementById("AllowanceTypeId").value;
+                var allowances = @Html.Raw(Json.Serialize(Model.ExistingAllowances));
+                if (allowanceTypeId != null && allowances != null) {
+                    for (let i = 0; i < allowances.length; i++) {
+                        if (allowances[i].allowanceTypeId == allowanceTypeId) {
+                            var allowanceDates = JSON.parse(allowances[i].allowanceDates);
+                            for (let j = 0; j < allowanceDates.length; j++) {
+                                if (allowanceDates[j] == date) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }               
+                return false;
+            }
+
+            // Takes a 1-digit number and inserts a zero before it
+            function padNumber(number) {
+                var ret = new String(number);
+                if (ret.length == 1) ret = "0" + ret;
+                return ret;
+            }
+
+            $("#datepicker").datepicker({
+                onSelect: function (dateText, inst) {
+                    var date = new Date(dateText);
+                    var year = date.getFullYear();
+                    var month = padNumber(date.getMonth() + 1);
+                    var day = padNumber(date.getDate());
+                    var dateString = year + "/" + month + "/" + day;
+                    if (IsExisting(dateString)) {
+                        alert(dateString + " is exist, Kindly choose another date");
+                    }
+                    else {
+                        addOrRemoveDate(dateString);
+                        CalculatePrice();
+                    }
+                },
+                beforeShowDay: function (date) {
+                    var year = date.getFullYear();
+                    // months and days are inserted into the array in the form, e.g "01/01/2009", but here the format is "1/1/2009"
+                    var month = padNumber(date.getMonth() + 1);
+                    var day = padNumber(date.getDate());
+                    // This depends on the datepicker's date format
+                    var dateString = year + "/" + month + "/" + day;
+
+                    var gotDate = jQuery.inArray(dateString, AllownanceDates);
+                    if (gotDate >= 0) {
+                        // Enable date so it can be deselected. Set style to be highlighted
+                        return [true, "ui-state-highlight"];
+                    }
+                    // Dates not in the array are left enabled, but with no extra style
+                    return [true, ""];
+                }
+            });
+            $("#datepicker").datepicker({
+                inline: false,
+                dateFormat: 'yyyy-mm-dd'
+            });
+            
+
+            function submit() {
+                $.ajax({
+                    type: "POST",
+                    url: '/Allowances/AddDate', // <-- Where should this point?
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(AllownanceDates)
+                }).done(function (data) {
+                    console.log(data.result);
+                })
+                
+            }
+           
+});
+    </script>
+}

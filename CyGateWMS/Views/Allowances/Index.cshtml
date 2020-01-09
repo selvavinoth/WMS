@@ -1,0 +1,234 @@
+﻿@model CyGateWMS.ViewModels.AllowancesFilterViewModel
+@using CyGateWMS.ViewModels
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+<hr />
+
+<div class="header">
+    <ol class="breadcrumb">
+        <li><a asp-action="Index" asp-controller="Allowances">Allowance</a></li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @if (!User.IsInRole(Constants.FINANCE))
+                    {
+                        <a asp-action="Create" class="btn btn-info" asp-controller="Allowances">Add New</a> <span>|</span>
+                        <a asp-action="Download" asp-controller="Allowances" class="btn btn-info">Download</a>
+                    }
+                    else if (User.IsInRole(Constants.FINANCE))
+                    {
+                        <a asp-action="FinanceDownload" asp-controller="Allowances" class="btn btn-info">Download</a>
+                    }
+
+                    <hr />
+                    <div>
+                        <form class="form-inline" asp-action="Filter" role="form" method="post">
+
+                            <select asp-for="@Model.AllowanceViewModel.AllowanceTypeId"
+                                    class="form-control dropdown btn btn-info"
+                                    asp-items="Model.AllowanceViewModel.AllowanceTypes"></select>
+                            <select asp-for="@Model.AllowanceViewModel.ApprovedStatusId"
+                                    class="form-control dropdown btn btn-info"
+                                    asp-items="Model.AllowanceViewModel.ApprovedStatus"></select>
+                            @if (!User.IsInRole(Constants.USER))
+                            {
+                                <select asp-for="@Model.AllowanceViewModel.CategoryID"
+                                        class="form-control dropdown btn btn-info"
+                                        asp-items="Model.AllowanceViewModel.Categories"></select>
+                                <select asp-for="@Model.AllowanceViewModel.UserID"
+                                        class="form-control dropdown btn btn-info"
+                                        asp-items="Model.AllowanceViewModel.Users"></select>
+                            }
+                            <select id='gMonth2' asp-for="@Model.AllowanceViewModel.MonthId" class="form-control dropdown btn btn-info">
+                                <option value=''>Select Month</option>
+                                <option value='1'>Janaury</option>
+                                <option value='2'>February</option>
+                                <option value='3'>March</option>
+                                <option value='4'>April</option>
+                                <option value='5'>May</option>
+                                <option value='6'>June</option>
+                                <option value='7'>July</option>
+                                <option value='8'>August</option>
+                                <option value='9'>September</option>
+                                <option value='10'>October</option>
+                                <option value='11'>November</option>
+                                <option value='12'>December</option>
+                            </select>
+
+                            <input type="submit" class="btn btn-success" value="Filter" />
+                            <a asp-action="Index" class="btn btn-success">Clear Filter</a>
+                        </form>
+                        
+                    </div>
+                </div>
+
+                @if (Model.AllowanceViewModelList != null && Model.AllowanceViewModelList.Count() > 0)
+                {
+                    if (!User.IsInRole(Constants.FINANCE))
+                    {
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                                    <table class="table table-striped table-bordered" id="dataTable" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th> Amount</th>
+                                                <th> Type</th>
+                                                <th> Days</th>
+                                                <th> Team</th>
+                                                <th> Month</th>
+                                                <th> Status</th>
+                                                @if (!User.IsInRole(Constants.USER))
+                                                {
+                                                    <th> Created By</th>
+                                                }
+                                                @if (Model.AllowanceViewModelList.Where(e => e.Status.ToString() == Constants.PENDING).Count() > 0 && User.IsInRole(Constants.TL))
+                                                {
+                                                    <th><a asp-action="ApproveAll" class="btn btn-info">ApproveAll</a></th>
+                                                }
+                                                else
+                                                {
+                                                    <th></th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.AllowanceViewModelList)
+                                            {
+                                                <tr>
+                                                    <td> @Html.DisplayFor(modelItem => item.Comments)</td>
+                                                    <td> @Html.DisplayFor(modelItem => item.Price)</td>
+                                                    <td> @Html.DisplayFor(modelItem => item.AllowanceType.AllowanceTypeName)</td>
+                                                    <td> @Html.DisplayFor(modelItem => item.NumberOfDays)</td>
+                                                    <td> @Html.DisplayFor(modelItem => item.AssignedCategory.CategoryName)</td>
+                                                    <td> @item.Month.ToString("MMMM yyy")</td>
+                                                    <td> @Html.DisplayFor(modelItem => item.Status)</td>
+                                                    @if (!User.IsInRole(Constants.USER))
+                                                    {
+                                                        <td> @Html.DisplayFor(modelItem => item.CreatedBy.Name)</td>
+                                                    }
+                                                        <td>
+                                                            @if (Model.IsFromFilter)
+                                                            {
+                                                                <a asp-action="Edit" class="btn btn-info" asp-route-id="@item.AllowanceID">Edit</a>
+                                                                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.AllowanceID">Details</a>
+                                                                @if (User.IsInRole(Constants.USER) || User.IsInRole(Constants.TL))
+                                                                {
+
+                                                                    <a asp-action="Delete" class="btn btn-info" asp-route-id="@item.AllowanceID">Delete</a>
+                                                                }
+                                                                @if (item.Status.ToString() == Constants.PENDING && !User.IsInRole(Constants.USER))
+                                                                {
+                                                                    <a asp-action="Approve" class="btn btn-info" asp-route-id="@item.AllowanceID">Approve</a>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <a asp-action="Edit" class="btn btn-info" asp-route-id="@item.AllowanceID">Edit</a>
+                                                                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.AllowanceID">Details</a>
+                                                                @if (User.IsInRole(Constants.USER) || User.IsInRole(Constants.TL))
+                                                                {
+
+                                                                    <a asp-action="Delete" class="btn btn-info" asp-route-id="@item.AllowanceID">Delete</a>
+                                                                }
+                                                                @if (item.Status.ToString() == Constants.PENDING && !User.IsInRole(Constants.USER))
+                                                                {
+                                                                    <a asp-action="Approve" class="btn btn-info" asp-route-id="@item.AllowanceID">Approve</a>
+                                                                }
+                                                            }
+                                                        </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+                                    <table class="table table-striped table-bordered" id="dataTable" style="width:100%;">
+                                        <thead>
+                                            <tr>
+                                                <th>User</th>
+                                                <th>Department</th>
+                                                @{
+                                                    var types = Model.AllowanceViewModelList.GroupBy(e => e.AllowanceType.AllowanceTypeId).Select(g => new { id = g.First().AllowanceType.AllowanceTypeId, name = g.First().AllowanceType.AllowanceTypeName }).OrderBy(e => e.name).ToList();
+                                                    foreach (var type in types)
+                                                    {
+                                                        <th> @type.name</th>
+                                                    }
+                                                }
+                                                <th> Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var user in Model.Users.OrderBy(e => e.EmployeeId))
+                                            {
+                                                string status = Constants.APPROVED;
+                                                @if (ViewBag.IsPending !=null && ViewBag.IsPending)
+                                                {
+                                                    status = Constants.PENDING;
+                                                }
+                                                List<AllowanceViewModel> allowances = Model.AllowanceViewModelList.Where(e => e.UserID == user.Id && e.Status.ToString() == status).ToList();
+                                                if (allowances.Count() > 0)
+                                                {
+                                                    var groupByType = allowances.GroupBy(e => e.AllowanceTypeId).Select(g => new { name = g.First().AllowanceType.AllowanceTypeName, price = g.Sum(a => a.Price) }).ToList();
+                                                    <tr>
+                                                        <td>@user.Name</td>
+                                                        <td>@Model.AllowanceViewModel.Categories.Where(e => e.Value == user.CategoryId.ToString()).FirstOrDefault().Text</td>
+                                                        
+
+                                                        @foreach (var type in types)
+                                                        {
+                                                            <td>@allowances.Where(e => e.AllowanceType.AllowanceTypeId == type.id && e.Status.ToString() == status).Sum(e => e.Price) </td>
+                                                        }
+                                                        <td>@allowances.Where(e => e.UserID == user.Id && e.Status.ToString() == status).Sum(e => e.Price)</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div>
+                        No Records
+                    </div>
+                }
+            </div>
+            <!--End Advanced Tables -->
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script>
+        $(function () {
+            $('#Month').change(function () {
+                var month = $(this).val();
+                $('#gMonth1').val(month);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,68 @@
+﻿@model CyGateWMS.Models.AllowanceType
+@using CyGateWMS.Models;
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+<div class="header">
+    <hr />
+    <ol class="breadcrumb">
+        <li><a asp-controller="AllowanceTypes" asp-action="Index">AllowanceType</a></li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" asp-action="Create" role="form" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="AllowanceTypeName" class="col-sm-2 control-label">Allowance Type</label>
+                            <div class="col-sm-10">
+                                <input asp-for="AllowanceTypeName" type="text" class="form-control">
+                            </div>
+                            <span asp-validation-for="AllowanceTypeName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AllowanceTypePrice" class="col-sm-2 control-label">Allowance Price</label>
+                            <div class="col-sm-10">
+                                <input asp-for="AllowanceTypePrice" type="text" class="form-control">
+                            </div>
+                            <span asp-validation-for="AllowanceTypePrice" class="text-danger"></span>
+                        </div>
+                        @for(int i=0; i< Model.catagoriesList.Count;i++)
+                        {
+                        <div class="col-sm-3">
+                            <input type="hidden" asp-for="@Model.catagoriesList[i].CategoryName" />
+                            <input type="hidden" asp-for="@Model.catagoriesList[i].CategoryId" />
+                            <input type="hidden" asp-for="@Model.catagoriesList[i].IsActive" />
+                            <input type="hidden" asp-for="@Model.catagoriesList[i].CreatedOn" />
+                            <input type="hidden" asp-for="@Model.catagoriesList[i].ModifiedOn" />
+                            @Model.catagoriesList[i].CategoryName  <input asp-for="@Model.catagoriesList[i].IsSelected" type="checkbox" />
+                        </div>
+                         }
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-default">Save</button>
+                                </div>
+                            </div>
+</form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,84 @@
+﻿@model CyGateWMS.Models.AllowanceType
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+<hr />
+<div class="header">
+    <ol class="breadcrumb">
+        <li><a asp-action="Index" asp-controller="AllowanceTypes">AllowanceType</a></li>
+        <li class="active">@Model.AllowanceTypeName</li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+
+                            <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info">
+
+
+                                <tbody>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1">Category</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.AllowanceTypeName)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1">Allowance Price</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.AllowanceTypePrice)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1">Created Ons</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.CreatedOn)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Modified On</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.ModifiedOn)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1">Status</td>
+                                        <td class="center">
+                                            @(Model.IsActive ? "Active" : "InActive")
+
+                                        </td>
+                                    </tr>
+                                    @if (Model.catagoriesList != null && Model.catagoriesList.Count > 0)
+                                    {
+                                        @for (int i = 0; i < Model.catagoriesList.Count; i++)
+                                        {
+                                            <div class="col-sm-3">
+                                                <input type="hidden" asp-for="@Model.catagoriesList[i].CategoryName" />
+                                                <input type="hidden" asp-for="@Model.catagoriesList[i].CategoryId" />
+                                                <input type="hidden" asp-for="@Model.catagoriesList[i].IsActive" />
+                                                <input type="hidden" asp-for="@Model.catagoriesList[i].CreatedOn" />
+                                                <input type="hidden" asp-for="@Model.catagoriesList[i].ModifiedOn" />
+                                                @Model.catagoriesList[i].CategoryName  <input asp-for="@Model.catagoriesList[i].IsSelected" type="checkbox" readonly/>
+                                            </div>
+                                        }
+                                    }
+                                </tbody>
+                        </table><div class="row">
+                        </div>
+                    </div>
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.AllowanceTypeId">Edit</a> |
+                        <a asp-action="Index">Back to List</a>
+                    </div>
+                </div>
+            </div>
+            <!--End Advanced Tables -->
+        </div>
+    </div>
+</div>
+</div>

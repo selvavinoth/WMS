@@ -1,0 +1,63 @@
+﻿@model IEnumerable<CyGateWMS.Models.Report>
+
+@{
+    ViewData["Title"] = "Report";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+@if(Model.Count()>0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>S.No</th>
+                <th>Ticket No</th>
+                <th>Category</th>
+                <th>Shift</th>
+                <th>Type</th>
+                <th>Arrival Time</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Time Spent</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+
+    @foreach (var item in Model) {
+        var index = 0;
+            <tr>
+                <td>
+                    @index++;
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shift.ShiftName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type.TypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ArrivalTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TimeSpent)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User.UserName)
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+}

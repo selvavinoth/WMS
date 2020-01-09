@@ -1,0 +1,127 @@
+﻿@model CyGateWMS.ViewModels.UserViewModel;
+
+
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+<div class="header">
+    <hr />
+    <ol class="breadcrumb">
+        @if (User.IsInRole("Admin"))
+        {
+            <li><a asp-controller="ApplicationUser" asp-action="Index">Users</a></li>
+            <li class="active">@Model.UserName</li>
+        }
+        else
+        {
+            <li class="active">@Model.UserName</li>
+        }
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" asp-action="Edit" role="form" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="UserName" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                                <input asp-for="UserName" type="text" class="form-control">
+                            </div>
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EmployeeId" class="col-sm-2 control-label">Employee Id</label>
+                            <div class="col-sm-10">
+                                <input asp-for="EmployeeId" type="text" class="form-control">
+                            </div>
+                            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="col-sm-2 control-label">Email</label>
+                            <div class="col-sm-10">
+                                <input asp-for="Email" type="email" class="form-control">
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="col-sm-2 control-label">PhoneNumber</label>
+                            <div class="col-sm-10">
+                                <input asp-for="PhoneNumber" type="text" class="form-control">
+                            </div>
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        @if (User.IsInRole(Constants.ADMIN))
+                        {
+                            <div class="form-group">
+                                <label asp-for="ApplicationRoles" class="col-sm-2 control-label">Role</label>
+                                <div class="col-sm-10">
+                                    <select asp-for="ApplicationRoleId"
+                                            class="form-control"
+                                            asp-items="Model.ApplicationRoles"></select>
+                                </div>
+                                <span asp-validation-for="ApplicationRoles" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Categories" class="col-sm-2 control-label">Category</label>
+                                <div class="col-sm-10">
+                                    <select asp-for="CategoryId"
+                                            class="form-control"
+                                            asp-items="Model.Categories"></select>
+                                </div>
+                                <span asp-validation-for="Categories" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="IsActive" class="col-sm-2 control-label">Status</label>
+                                <div class="col-sm-1">
+                                    <input asp-for="IsActive" type="checkbox" class="form-control">
+                                </div>
+                                <span asp-validation-for="IsActive" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="IsRegularShift" class="col-sm-2 control-label">Regular Shift</label>
+                                <div class="col-sm-1">
+                                    <input asp-for="IsRegularShift" type="checkbox" class="form-control">
+                                </div>
+                                <span asp-validation-for="IsRegularShift" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="IsCab" class="col-sm-2 control-label">Cab</label>
+                                <div class="col-sm-1">
+                                    <input asp-for="IsCab" type="checkbox" class="form-control">
+                                </div>
+                                <span asp-validation-for="IsCab" class="text-danger"></span>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        @if (User.IsInRole(Constants.ADMIN))
+        {
+            <a asp-action="Index">Back to List</a>
+        }
+        else
+        {
+            <a asp-action="Details" asp-route-id="@Model.UserId">Back</a>
+        }
+    </div>
+</div>
+

@@ -1,0 +1,88 @@
+﻿@model CyGateWMS.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_DashBoard_Layout.cshtml";
+}
+
+<hr />
+<div class="header">
+    <ol class="breadcrumb">
+        @if (User.IsInRole(Constants.ADMIN))
+        {
+            <li><a asp-action="Index" asp-controller="ApplicationUser">User</a></li>
+        }
+        <li class="active">@Model.UserName</li>
+    </ol>
+
+</div>
+
+<div id="page-inner">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <div id="dataTables-example_wrapper" class="dataTables_wrapper form-inline" role="grid">
+
+                            <table class="table table-striped table-bordered table-hover dataTable no-footer" id="dataTables-example" aria-describedby="dataTables-example_info">
+
+
+                                <tbody>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Name</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.UserName)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Employee Id</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.EmployeeId)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Email</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Email)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1"> Mobile</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.PhoneNumber)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1"> Role</td>
+                                        <td class="center ">@Html.DisplayFor(model => model.Role)</td>
+                                    </tr>
+                                    <tr class="gradeA even">
+                                        <td class="sorting_1">Category </td>
+                                        <td class="center ">@Html.DisplayFor(model => model.CategoryName)</td>
+                                    </tr>
+                                    <tr class="gradeA odd">
+                                        <td class="sorting_1">Status </td>
+                                        <td class="center ">@Html.DisplayFor(model => model.IsActive)</td>
+                                    </tr>
+                                </tbody>
+                            </table><div class="row">
+                            </div>
+                        </div>
+                        <div>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div>
+                                    <a asp-action="Edit" asp-route-id="@Model.UserId">Edit</a> |
+                                    <a asp-action="Index"> Back to List</a>
+                                </div>
+                            }
+                            else
+                            {
+                                <a asp-action="Edit" asp-route-id="@Model.UserId">Edit</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!--End Advanced Tables -->
+            </div>
+        </div>
+    </div>
+</div>
+
